@@ -1,5 +1,6 @@
 package mapper;
 
+import bean.MyProperties;
 import format.ToRedisOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -11,7 +12,11 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.IOException;
 
 public class ToRedisMain {
+
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+
+        MyProperties prop = new MyProperties();
+
         Configuration configuration = new Configuration();
         Job job = Job.getInstance(configuration);
         job.setJarByClass(ToRedisMain.class);
@@ -21,7 +26,13 @@ public class ToRedisMain {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        job.setMapperClass(ToRedisStrMapper.class);
+        //判断写入Redis的数据类型
+        if (prop.getRedisValueIsString()){
+            job.setMapperClass(ToRedisStrMapper.class);
+        }else {
+            job.setMapperClass(ToRedisHashMapper.class);
+        }
+
 //        job.setReducerClass(ProMarketReduce.class);
 
         job.setOutputFormatClass(ToRedisOutputFormat.class);

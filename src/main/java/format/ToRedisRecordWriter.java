@@ -27,13 +27,13 @@ public class ToRedisRecordWriter extends RecordWriter<Text, Text> {
 
     public void write(Text key, Text value) throws IOException, InterruptedException {
         //判断写入redis的数据类型
-        if (prop.getRedisValueIsString()){ //String类型
+//        if (prop.getRedisValueIsString()){ //String类型
             jedis.set(key.toString(), value.toString());
-        } else if (prop.getRedisValueIsHash()){ //Hash类型
-            Map map = new HashMap();
-            map.put(key.toString(),value.toString());
-            jedis.hmset(key.toString(),map);
-        }
+//        } else if (prop.getRedisValueIsHash()){ //Hash类型
+//            Map map = new HashMap();
+//            map.put(key.toString(),value.toString());
+//            jedis.hmset(key.toString(),map);
+//        }
     }
 
     public void close(TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
