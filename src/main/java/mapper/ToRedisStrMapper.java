@@ -43,10 +43,9 @@ public class ToRedisStrMapper extends Mapper<LongWritable, Text, Text, Text> {
             for (String item : valueIndex){
                 outPutValue += fields[Integer.parseInt(item)] + prop.getStringKeySuffixSeparator();
             }
-            outPutValue.substring(0, outPutValue.length() - 1);
+            outPutValue = outPutValue.substring(0, outPutValue.length() - 1);
         }
 
-        System.out.println(outPutKey + outPutValue);
 //       添加key的前缀
         context.write(new Text(prefix + outPutKey),new Text(outPutValue));
     }
