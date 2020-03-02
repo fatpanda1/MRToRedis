@@ -14,28 +14,44 @@ public class ToRedisHashMapper extends Mapper<LongWritable, Text, Text, Text> {
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         String line = value.toString();
-        String[] fields = line.split("\\|");
-        String outPutKey = fields[0];
-        String outPutValue;
+        String[] lines = line.split("\\|");
+        String outPutKey = "";
+        String outPutValue = "";
+
         //前缀
-        String prefix = "";
-        //根据数据类型不同赋值不同的前缀
-        if (prop.getRedisValueIsString()){  //String类型
-            prefix = prop.getStringKeyPrefix();
-        } else if (prop.getRedisValueIsHash()){ //Hash类型
-            prefix = prop.getHashKeyPrefix();
+        String prefix = prop.getHashKeyPrefix();
+        //获取key后缀的索引
+        String[] suffixIndex = prop.getHashKeySuffixIndex().split(",");
+        //拼接key后缀的所有值
+        for (String item : suffixIndex) {
+            //从数据源中按照后缀索引取值
+            outPutKey += lines[Integer.parseInt(item)] + prop.getHashKeySuffixSeparator();
         }
+        //key去掉后缀尾部的分隔符
+        outPutKey = outPutKey.substring(0, outPutKey.length() - 1);
 
-        //判断value数据类型是否为json
-        if(prop.getStringValueIsJson()){
-            Gson gson = new Gson();
-            JsonObj jsonObj = new JsonObj(fields[0],fields[1],fields[2],fields[3],fields[4]);
-            outPutValue = gson.toJson(jsonObj);
-        } else {
-            outPutValue = line.substring(outPutKey.length() + 1);
+        //field取值
+        //获取field的前缀
+        String preField = prop.getHashFieldPrefix();
+        //获取field后缀的索引
+        String[] fieldSuffixIndex = prop.getHashFieldSuffixIndex().split(",");
+        //拼接field后缀的所有值
+        String outPutField = "";
+        for (String item : fieldSuffixIndex) {
+            //从数据源中按照后缀索引取值
+            outPutField += lines[Integer.parseInt(item)] + prop.getHashFieldSuffixSeparator();
         }
+        //key去掉后缀尾部的分隔符
+        outPutField = preField + outPutField.substring(0, outPutKey.length() - 1);
 
+        //value取值
+        //获取value的值
+        String[] valueIndex = prop.getHashValueIndex().split(",");
+        for (String item : valueIndex){
+            outPutValue += lines[Integer.parseInt(item)] + prop.getHashKeySuffixSeparator();
+        }
+        outPutValue = outPutValue.substring(0, outPutValue.length() - 1);
 //       添加key的前缀
-        context.write(new Text(prefix + outPutKey),new Text(outPutValue));
+        context.write(new Text(prefix + outPutKey + "|" + outPutField),new Text(outPutValue));
     }
 }

@@ -31,8 +31,9 @@ public class ToRedisRecordWriter extends RecordWriter<Text, Text> {
             jedis.set(key.toString(), value.toString());
         } else if (prop.getRedisValueIsHash()){ //Hash类型
             Map map = new HashMap();
-            map.put(key.toString(),value.toString());
-            jedis.hmset(key.toString(),map);
+            String[] keys = key.toString().split("\\|");
+            map.put(keys[1],value.toString());
+            jedis.hmset(keys[0],map);
         }
     }
 

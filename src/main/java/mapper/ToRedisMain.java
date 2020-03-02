@@ -29,7 +29,7 @@ public class ToRedisMain {
 
         //判断写入Redis的数据类型
         if (prop.getRedisValueIsString()){
-        job.setMapperClass(ToRedisStrMapper.class);
+            job.setMapperClass(ToRedisStrMapper.class);
         }else {
             job.setMapperClass(ToRedisHashMapper.class);
         }

@@ -23,6 +23,14 @@ public class MyProperties {
     private String stringValueIsJson = prop.getProp("string.value.is.json");
     private String stringValueIndex = prop.getProp("string.value.index");
     private String hashKeyPrefix = prop.getProp("hash.key.prefix");
+    private String hashKeySuffixIndex = prop.getProp("hash.key.suffix.index");
+    private String hashKeySuffixSeparator = prop.getProp("hash.key.suffix.separator");
+    private String hashKeyIsHashCode = prop.getProp("hash.key.isHashCode");
+    private String hashKeyHashCodeIndex = prop.getProp("hash.key.hashCode.index");
+    private String hashFieldPrefix= prop.getProp("hash.field.prefix");
+    private String hashFieldSuffixIndex = prop.getProp("hash.field.suffix.index");
+    private String hashFieldSuffixSeparator = prop.getProp("hash.field.suffix.separator");
+    private String hashValueIndex = prop.getProp("hash.value.index");
 
     public String getServerAddress() {
         return serverAddress;
@@ -78,5 +86,37 @@ public class MyProperties {
 
     public String getHashKeyPrefix() {
         return hashKeyPrefix;
+    }
+
+    public String getHashKeySuffixIndex() {
+        return hashKeySuffixIndex;
+    }
+
+    public String getHashKeySuffixSeparator() {
+        return hashKeySuffixSeparator;
+    }
+
+    public String getHashKeyIsHashCode() {
+        return hashKeyIsHashCode;
+    }
+
+    public String getHashKeyHashCodeIndex() {
+        return hashKeyHashCodeIndex;
+    }
+
+    public String getHashFieldPrefix() {
+        return hashFieldPrefix;
+    }
+
+    public String getHashFieldSuffixIndex() {
+        return hashFieldSuffixIndex;
+    }
+
+    public String getHashFieldSuffixSeparator() {
+        return hashFieldSuffixSeparator;
+    }
+
+    public String getHashValueIndex() {
+        return hashValueIndex;
     }
 }
