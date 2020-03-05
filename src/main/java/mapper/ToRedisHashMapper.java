@@ -1,11 +1,11 @@
 package mapper;
 
 import bean.MyProperties;
-import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.MD5Hash;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-import utils.JsonObj;
 
 import java.io.IOException;
 
@@ -20,15 +20,35 @@ public class ToRedisHashMapper extends Mapper<LongWritable, Text, Text, Text> {
 
         //前缀
         String prefix = prop.getHashKeyPrefix();
-        //获取key后缀的索引
-        String[] suffixIndex = prop.getHashKeySuffixIndex().split(",");
-        //拼接key后缀的所有值
-        for (String item : suffixIndex) {
-            //从数据源中按照后缀索引取值
-            outPutKey += lines[Integer.parseInt(item)] + prop.getHashKeySuffixSeparator();
+        //判断key后缀索引是否为空
+        if(StringUtils.isNotBlank(prop.getHashKeySuffixIndex())){
+            //获取key后缀的索引
+            String[] suffixIndex = prop.getHashKeySuffixIndex().split(",");
+            //拼接key后缀的所有值
+            for (String item : suffixIndex) {
+                //从数据源中按照后缀索引取值
+                outPutKey += lines[Integer.parseInt(item)] + prop.getHashKeySuffixSeparator();
+            }
+            //key去掉后缀尾部的分隔符
+            outPutKey = outPutKey.substring(0, outPutKey.length() - 1);
         }
-        //key去掉后缀尾部的分隔符
-        outPutKey = outPutKey.substring(0, outPutKey.length() - 1);
+
+        //判断是否有需要hashcode后进行拼接的key后缀
+        //如果有，进行拼接
+        String outPutHash = "";
+        if (prop.getHashKeyIsHashCode()){
+            //获取需要hashcode的值的索引
+            String[] hashCodeIndex = prop.getHashKeyHashCodeIndex().split(",");
+            //拼接key后缀的所有值
+            for (String item : hashCodeIndex) {
+                //从数据源中按照后缀索引取值
+                outPutHash += hash(lines[Integer.parseInt(item)]) + prop.getHashKeySuffixSeparator();
+            }
+            //key去掉后缀尾部的分隔符
+            outPutHash = outPutHash.substring(0, outPutHash.length() - 1);
+
+        }
+        outPutKey += ":" + outPutHash;
 
         //field取值
         //获取field的前缀
@@ -42,7 +62,7 @@ public class ToRedisHashMapper extends Mapper<LongWritable, Text, Text, Text> {
             outPutField += lines[Integer.parseInt(item)] + prop.getHashFieldSuffixSeparator();
         }
         //key去掉后缀尾部的分隔符
-        outPutField = preField + outPutField.substring(0, outPutKey.length() - 1);
+        outPutField = preField + outPutField.substring(0, outPutField.length() - 1);
 
         //value取值
         //获取value的值
@@ -53,5 +73,13 @@ public class ToRedisHashMapper extends Mapper<LongWritable, Text, Text, Text> {
         outPutValue = outPutValue.substring(0, outPutValue.length() - 1);
 //       添加key的前缀
         context.write(new Text(prefix + outPutKey + "|" + outPutField),new Text(outPutValue));
+    }
+
+    private int hash(String str){
+        int hash = str.length();
+        for (int i = 0; i < str.length(); i++){
+            hash += str.charAt(i) + str.charAt(i) % 3;
+        }
+        return (hash);
     }
 }

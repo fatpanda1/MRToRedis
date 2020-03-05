@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import utils.GetPropertiesUtils;
 
 import java.io.IOException;
 
@@ -38,8 +39,8 @@ public class ToRedisMain {
 
         job.setOutputFormatClass(ToRedisOutputFormat.class);
 
-        FileInputFormat.setInputPaths(job,new Path("F:\\learning\\MapReduce_Test\\MRTORedis"));
-        FileOutputFormat.setOutputPath(job,new Path("F:\\learning\\MapReduce_Test\\MRTORedisOut"));
+        FileInputFormat.setInputPaths(job,new Path(args[0]));
+        FileOutputFormat.setOutputPath(job,new Path(args[1]));
 
         job.waitForCompletion(true);
     }

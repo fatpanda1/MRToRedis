@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class MyProperties {
 
-    private GetPropertiesUtils prop = new GetPropertiesUtils("deploy/writeToRedis.properties");
+    private GetPropertiesUtils prop = new GetPropertiesUtils("hdfs://120.55.43.230:9000/testData/writeToRedis.properties");
 
     private String serverAddress = prop.getProp("server.address");
     private String serverPassword = prop.getProp("server.password");
@@ -96,8 +96,8 @@ public class MyProperties {
         return hashKeySuffixSeparator;
     }
 
-    public String getHashKeyIsHashCode() {
-        return hashKeyIsHashCode;
+    public Boolean getHashKeyIsHashCode() {
+        return Boolean.parseBoolean(hashKeyIsHashCode);
     }
 
     public String getHashKeyHashCodeIndex() {
