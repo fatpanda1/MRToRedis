@@ -16,7 +16,7 @@ public class MyProperties {
     private String redisOutPort = prop.getProp("redis.out.port");
     private String redisValueIsString = prop.getProp("redis.value.is.string");
     private String redisValueIsHash = prop.getProp("redis.value.is.hash");
-    private String redisValueIsZset = prop.getProp("redis.value.is.zest");
+    private String redisExpireTime = prop.getProp("redis.expire.time");
     private String stringKeyPrefix = prop.getProp("string.key.prefix");
     private String stringKeySuffixIndex = prop.getProp("string.key.suffix.index");
     private String stringKeySuffixSeparator= prop.getProp("string.key.suffix.separator");
@@ -60,8 +60,8 @@ public class MyProperties {
         return Boolean.parseBoolean(redisValueIsHash);
     }
 
-    public Boolean getRedisValueIsZset() {
-        return Boolean.parseBoolean(redisValueIsZset);
+    public String getRedisExpireTime() {
+        return redisExpireTime;
     }
 
     public String getStringKeyPrefix() {
